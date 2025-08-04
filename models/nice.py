@@ -73,10 +73,10 @@ class NICE(nnx.Module):
     def sampling(self, z):
         z = z / jnp.exp(self.scaling_factor.value)
         z1, z2 = z[:, ::2], z[:, 1::2]
-        z1, z2 = self.block1.sampling(z1, z2)
-        z2, z1 = self.block2.sampling(z2, z1)
-        z1, z2 = self.block3.sampling(z1, z2)
         z2, z1 = self.block4.sampling(z2, z1)
+        z1, z2 = self.block3.sampling(z1, z2)
+        z2, z1 = self.block2.sampling(z2, z1)
+        z1, z2 = self.block1.sampling(z1, z2)
         output = jnp.zeros_like(z)
         output = output.at[:, ::2].set(z1)
         output = output.at[:, 1::2].set(z2)
