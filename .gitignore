@@ -156,3 +156,4 @@ mnist/
 output/
 *.parquet
 *.png
+sample_logistic*/

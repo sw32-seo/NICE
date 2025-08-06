@@ -54,7 +54,7 @@ class NICE(nnx.Module):
         self.block2 = NICEBlock(dim_in_half, hidden_dim, rngs)
         self.block3 = NICEBlock(dim_in_half, hidden_dim, rngs)
         self.block4 = NICEBlock(dim_in_half, hidden_dim, rngs)
-        self.scaling_factor = nnx.Param(jnp.ones((dim_in,)))
+        self.scaling_factor = nnx.Param(jnp.zeros((dim_in,)))
 
     def __call__(self, x):
         # split x into two halves by even and odd indices
@@ -71,7 +71,7 @@ class NICE(nnx.Module):
         return output, self.scaling_factor.value
 
     def sampling(self, z):
-        z = z / jnp.exp(self.scaling_factor.value)
+        z = jnp.exp(-self.scaling_factor.value) * z
         z1, z2 = z[:, ::2], z[:, 1::2]
         z2, z1 = self.block4.sampling(z2, z1)
         z1, z2 = self.block3.sampling(z1, z2)
